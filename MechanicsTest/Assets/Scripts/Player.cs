@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour 
 {
@@ -16,7 +17,12 @@ public class Player : MonoBehaviour
 	private float shootCooldownCount;
 	public float shootCooldown = 0.25f;
 
-	void Start () 
+    public Vector3 rotateRight;
+    public Vector3 rotateLeft;
+
+    private Vector3 playerRotation;
+
+    void Start () 
 	{
 		//Change player color
 		sprite.color = ColorInfo.ColorTypeToColor (color);
@@ -25,18 +31,39 @@ public class Player : MonoBehaviour
 
 	void Update () 
 	{
-		shootCooldownCount += Time.deltaTime;
+        if (Input.GetKey(KeyCode.Q))
+        {
+            transform.Rotate(rotateRight);
+            playerRotation = rotateRight;
+        }
+        else if (Input.GetKey(KeyCode.E))
+        {
+            playerRotation = rotateLeft;
+            transform.Rotate(rotateLeft);
+        }
+
+        shootCooldownCount += Time.deltaTime;
 		//Shoot control
 		if (Input.GetMouseButton (0) && shootCooldownCount >= shootCooldown) 
 		{
 			GameObject __go = (GameObject)GameObject.Instantiate (shootPrefab, 
-				transform.position, Quaternion.identity);
+				transform.position, transform.rotation);
 			Shoot __shoot = __go.GetComponent<Shoot> ();
 			__shoot.color = color;
 			shootCooldownCount = 0f;
 		}
-		//Change Color on Right-Button Press
-		if (Input.GetMouseButtonDown (1)) 
+
+        if (Input.GetKey(KeyCode.Q))
+	    {
+	        transform.Rotate(rotateRight);
+	    }
+	    else if (Input.GetKey(KeyCode.E))
+	    {
+            transform.Rotate(rotateLeft);
+        }
+
+        //Change Color on Right-Button Press
+        if (Input.GetMouseButtonDown (1)) 
 		{
 			color = ColorInfo.GetNextColor (color);
 			sprite.color = ColorInfo.ColorTypeToColor (color);
